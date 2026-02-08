@@ -1,3 +1,30 @@
+// Mobile menu toggle
+const mobileMenu = document.getElementById('mobile-menu');
+const navLinks = document.getElementById('nav-links');
+
+if (mobileMenu) {
+    mobileMenu.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+    
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !navLinks.contains(e.target)) {
+            mobileMenu.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+    });
+}
+
 // Smooth scrolling
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -61,36 +88,40 @@ document.querySelectorAll('.skill-card').forEach(card => {
     skillObserver.observe(card);
 });
 
-// Parallax effect for hero
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero-content');
-    if (hero && scrolled < window.innerHeight) {
-        hero.style.transform = `translateY(${scrolled * 0.3}px)`;
-        hero.style.opacity = 1 - (scrolled / 700);
-    }
-});
+// Parallax effect for hero (desktop only)
+if (window.innerWidth > 768) {
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero-content');
+        if (hero && scrolled < window.innerHeight) {
+            hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+            hero.style.opacity = 1 - (scrolled / 700);
+        }
+    });
+}
 
-// Enhanced hover effect for project cards
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('mousemove', function(e) {
-        const rect = this.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+// Enhanced hover effect for project cards (desktop only)
+if (window.innerWidth > 768) {
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-15px) scale(1.03)`;
+        });
         
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 20;
-        const rotateY = (centerX - x) / 20;
-        
-        this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-15px) scale(1.03)`;
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+        });
     });
-    
-    card.addEventListener('mouseleave', function() {
-        this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
-    });
-});
+}
 
 // Typing effect for hero text
 const heroTitle = document.querySelector('.hero h1');
@@ -111,19 +142,21 @@ if (heroTitle) {
     setTimeout(typeWriter, 800);
 }
 
-// Create floating particles
+// Create floating particles (desktop only)
 function createParticles() {
-    const particlesContainer = document.createElement('div');
-    particlesContainer.className = 'particles';
-    document.body.appendChild(particlesContainer);
-    
-    for (let i = 0; i < 50; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 10 + 's';
-        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-        particlesContainer.appendChild(particle);
+    if (window.innerWidth > 768) {
+        const particlesContainer = document.createElement('div');
+        particlesContainer.className = 'particles';
+        document.body.appendChild(particlesContainer);
+        
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
     }
 }
 
@@ -222,3 +255,53 @@ window.addEventListener('load', () => {
         document.body.style.opacity = '1';
     }, 100);
 });
+
+// Touch-friendly improvements for mobile
+if ('ontouchstart' in window) {
+    // Prevent double-tap zoom on buttons
+    document.querySelectorAll('.btn, .social-links a, .contact-card').forEach(element => {
+        element.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            this.click();
+        }, { passive: false });
+    });
+}
+
+// Optimize scroll performance on mobile
+let ticking = false;
+let lastScrollY = 0;
+
+window.addEventListener('scroll', () => {
+    lastScrollY = window.scrollY;
+    
+    if (!ticking) {
+        window.requestAnimationFrame(() => {
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            if (lastScrollY > 100) {
+                navbar.style.boxShadow = '0 5px 30px rgba(0,0,0,0.5)';
+                navbar.style.padding = window.innerWidth <= 768 ? '0.6rem 0' : '0.5rem 0';
+            } else {
+                navbar.style.boxShadow = 'none';
+                navbar.style.padding = window.innerWidth <= 768 ? '0.8rem 0' : '1rem 0';
+            }
+            
+            ticking = false;
+        });
+        
+        ticking = true;
+    }
+}, { passive: true });
+
+// Viewport height fix for mobile browsers
+function setVH() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setVH();
+window.addEventListener('resize', setVH);
+
+// Prevent horizontal scroll on mobile
+document.body.style.overflowX = 'hidden';
+document.documentElement.style.overflowX = 'hidden';
