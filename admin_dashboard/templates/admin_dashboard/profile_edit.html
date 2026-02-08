@@ -1,0 +1,110 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block title %}Edit Profile - Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Edit Profile</h1>
+    <p>Update your personal information and images</p>
+</div>
+
+<div class="form-container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" value="{{ profile.name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="title">Title/Position *</label>
+            <input type="text" id="title" name="title" value="{{ profile.title }}" placeholder="e.g., Full Stack Developer" required>
+        </div>
+
+        <div class="form-group">
+            <label for="bio">Bio *</label>
+            <textarea id="bio" name="bio" required>{{ profile.bio }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" value="{{ profile.email }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" name="phone" value="{{ profile.phone }}">
+        </div>
+
+        <div class="form-group">
+            <label for="profile_image">Profile Image</label>
+            {% if profile.profile_image %}
+            <div style="margin-bottom: 1rem; padding: 1rem; background: var(--dark); border-radius: 8px; border: 1px solid var(--border);">
+                <img src="{{ profile.profile_image.url }}" alt="Profile" style="max-width: 150px; max-height: 150px; border-radius: 50%; display: block; margin-bottom: 0.5rem;">
+                <p style="margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem;">{{ profile.profile_image.name }}</p>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--danger);">
+                    <input type="checkbox" name="remove_profile_image" value="1">
+                    <span>Remove this image</span>
+                </label>
+            </div>
+            {% endif %}
+            <input type="file" id="profile_image" name="profile_image" accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="banner_image">Banner Image</label>
+            {% if profile.banner_image %}
+            <div style="margin-bottom: 1rem; padding: 1rem; background: var(--dark); border-radius: 8px; border: 1px solid var(--border);">
+                <img src="{{ profile.banner_image.url }}" alt="Banner" style="max-width: 100%; max-height: 200px; border-radius: 8px; display: block; margin-bottom: 0.5rem;">
+                <p style="margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem;">{{ profile.banner_image.name }}</p>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--danger);">
+                    <input type="checkbox" name="remove_banner_image" value="1">
+                    <span>Remove this image</span>
+                </label>
+            </div>
+            {% endif %}
+            <input type="file" id="banner_image" name="banner_image" accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="resume">Resume (PDF)</label>
+            {% if profile.resume %}
+            <div style="margin-bottom: 1rem; padding: 1rem; background: var(--dark); border-radius: 8px; border: 1px solid var(--border);">
+                <p style="margin-bottom: 0.5rem; color: var(--text-light); font-size: 0.9rem;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 0.5rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    {{ profile.resume.name }}
+                </p>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--danger);">
+                    <input type="checkbox" name="remove_resume" value="1">
+                    <span>Remove this file</span>
+                </label>
+            </div>
+            {% endif %}
+            <input type="file" id="resume" name="resume" accept=".pdf">
+        </div>
+
+        <div class="form-group">
+            <label for="github_url">GitHub URL</label>
+            <input type="url" id="github_url" name="github_url" value="{{ profile.github_url }}" placeholder="https://github.com/username">
+        </div>
+
+        <div class="form-group">
+            <label for="linkedin_url">LinkedIn URL</label>
+            <input type="url" id="linkedin_url" name="linkedin_url" value="{{ profile.linkedin_url }}" placeholder="https://linkedin.com/in/username">
+        </div>
+
+        <div class="form-group">
+            <label for="twitter_url">Twitter URL</label>
+            <input type="url" id="twitter_url" name="twitter_url" value="{{ profile.twitter_url }}" placeholder="https://twitter.com/username">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'admin_dashboard:dashboard' %}" class="btn" style="background: var(--border);">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

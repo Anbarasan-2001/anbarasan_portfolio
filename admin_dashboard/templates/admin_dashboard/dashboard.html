@@ -1,0 +1,56 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block title %}Dashboard - Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Welcome back! Here's an overview of your portfolio.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>{{ projects_count }}</h3>
+        <p>Total Projects</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ skills_count }}</h3>
+        <p>Total Skills</p>
+    </div>
+    <div class="stat-card">
+        <h3>{% if profile %}1{% else %}0{% endif %}</h3>
+        <p>Profile Status</p>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>Recent Projects</h2>
+        <a href="{% url 'admin_dashboard:project_create' %}" class="btn btn-primary btn-sm">Add New Project</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Technologies</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in recent_projects %}
+            <tr>
+                <td>{{ project.title }}</td>
+                <td>{{ project.technologies }}</td>
+                <td class="actions">
+                    <a href="{% url 'admin_dashboard:project_edit' project.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" style="text-align: center; padding: 2rem;">No projects yet. Create your first project!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

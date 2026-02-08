@@ -1,0 +1,40 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block title %}{% if skill %}Edit{% else %}Create{% endif %} Skill - Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>{% if skill %}Edit{% else %}Create New{% endif %} Skill</h1>
+</div>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="name">Skill Name *</label>
+            <input type="text" id="name" name="name" value="{{ skill.name }}" placeholder="e.g., Python, JavaScript, React" required>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Category *</label>
+            <input type="text" id="category" name="category" value="{{ skill.category }}" placeholder="e.g., Backend, Frontend, Database" required>
+        </div>
+
+        <div class="form-group">
+            <label for="percentage">Proficiency (0-100) *</label>
+            <input type="number" id="percentage" name="percentage" value="{{ skill.percentage }}" min="0" max="100" required>
+        </div>
+
+        <div class="form-group">
+            <label for="icon">Icon (optional)</label>
+            <input type="text" id="icon" name="icon" value="{{ skill.icon }}" placeholder="Icon class or emoji">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% if skill %}Update{% else %}Create{% endif %} Skill</button>
+            <a href="{% url 'admin_dashboard:skills_list' %}" class="btn" style="background: var(--border);">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
