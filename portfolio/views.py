@@ -4,8 +4,16 @@ from .models import Profile, Project, Skill
 
 def home(request):
     profile = Profile.objects.first()
-    projects = Project.objects.all()
-    skills = Skill.objects.all()
+    projects = Project.objects.all().order_by('order')
+    skills = Skill.objects.all().order_by('category', 'name')
+    
+    # Process technologies for each project
+    for project in projects:
+        if project.technologies:
+            project.tech_list = [tech.strip() for tech in project.technologies.split(',')]
+        else:
+            project.tech_list = []
+    
     context = {
         'profile': profile,
         'projects': projects,

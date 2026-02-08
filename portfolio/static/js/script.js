@@ -194,24 +194,24 @@ document.querySelectorAll('.btn').forEach(button => {
     });
 });
 
-// Animate contact items
-const contactItems = document.querySelectorAll('.contact-item');
+// Animate contact cards
+const contactCards = document.querySelectorAll('.contact-card');
 const contactObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, index) => {
         if (entry.isIntersecting) {
             setTimeout(() => {
                 entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateX(0)';
+                entry.target.style.transform = 'translateY(0)';
             }, index * 100);
         }
     });
-}, { threshold: 0.5 });
+}, { threshold: 0.3 });
 
-contactItems.forEach(item => {
-    item.style.opacity = '0';
-    item.style.transform = 'translateX(-50px)';
-    item.style.transition = 'all 0.5s ease';
-    contactObserver.observe(item);
+contactCards.forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transition = 'all 0.5s ease';
+    contactObserver.observe(card);
 });
 
 // Add loading animation
